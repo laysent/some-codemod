@@ -1,0 +1,7 @@
+__testfixtures__
+__test__
+coverage
+node_modules
+.gitignore
+.DS_Store
+jest.config.js

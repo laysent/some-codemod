@@ -20,4 +20,27 @@ Above example shows global installation. In production, it's recommended to use 
 
 ## Built-in Codemods
 
-Coming soon...
+### iconfont
+
+This codemod will transform `<i className="iconfont icon-xxx" />` to `<Icon type="xxx" />` and import `Icon` component to file if not imported already.
+
+This codemod will be useful when migrating iconfont to SVG. Following illustrates a series of possible steps:
+
+1. Create a React component that will render iconfont, example:
+
+```typescript
+const Icon: React.FC<{ type: string }> = props => {
+  const { className, type, ...rest } = props;
+  return (
+    <i className={classnames('iconfont', `icon-${props.type}`, className)} {...rest} />
+  );
+};
+```
+
+2. Run this codemod to transform all usages of iconfont, use component above instead.
+3. Refactor component above to use SVG instead.
+
+Options required:
+
++ `iconName`: The name of component that will be used, such as `Icon`
++ `importPath`: The path of component, which will be used to insert import statement (only if component not imported already)

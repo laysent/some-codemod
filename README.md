@@ -44,3 +44,32 @@ Options required:
 
 + `iconName`: The name of component that will be used, such as `Icon`
 + `importPath`: The path of component, which will be used to insert import statement (only if component not imported already)
+
+### autobind
+
+THis codemod will transform class definition to use `autobind` decorator instead of using class property for `this` bind. Example:
+
+Input the following class definition:
+
+```javascript
+class Component extends React.Component {
+  onClick = () => { };
+  render() {
+    return null;
+  }
+}
+```
+
+Transform result will be:
+
+```javascript
+import { autobind } from 'core-decorators';
+
+@autobind
+class Component extends React.Component {
+  onClick() { }
+  render() {
+    return null;
+  }
+}
+```

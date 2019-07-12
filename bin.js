@@ -19,12 +19,12 @@ function getConfigs(filename) {
   return new Promise((resolve) => {
     if (configNames.length === 0) return resolve({});
     prompts(configNames.map(name => ({
-      type: 'text',
+      type: typeof configs[name] === 'boolean' ? 'confirm' : 'text',
       name,
       message: `value of ${name}`,
       initial: configs[name],
       validate(value) {
-        if (!value) return `${name} is required!`;
+        if (value === '' || value === undefined) return `${name} is required!`;
         return true;
       },
     })));

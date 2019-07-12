@@ -1,4 +1,4 @@
-const BaseTransformer = require('./transformer');
+const BaseTransformer = require('./_transformer');
 const PREFIX = 'icon-';
 /**
  * 1. find if <i className="iconfont"></i>, no => end; yes => continue

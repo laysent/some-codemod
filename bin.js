@@ -5,7 +5,9 @@ const glob = require('glob');
 const Runner = require('jscodeshift/src/Runner');
 
 const folder = path.resolve(__filename, '..', 'transforms');
-const files = fs.readdirSync(folder).filter(filename => filename.endsWith('js'));
+const files = fs.readdirSync(folder)
+  .filter(filename => filename.endsWith('js'))
+  .filter(filename => !filename.startsWith('_'));
 const choices = files.map(file => ({
   title: path.parse(file).name,
   value: path.resolve(__filename, '../transforms', file),

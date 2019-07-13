@@ -47,7 +47,7 @@ Options required:
 
 ### autobind
 
-THis codemod will transform class definition to use `autobind` decorator instead of using class property for `this` bind. Example:
+This codemod will transform class definition to use `autobind` decorator instead of using class property for `this` bind. Example:
 
 Input the following class definition:
 
@@ -73,3 +73,9 @@ class Component extends React.Component {
   }
 }
 ```
+
+Possible configs for this codemod are:
+
++ decoratorName: Name of decorator, default is `autobind`
++ decoratorPath: Path of decorator library, default is `core-decorators`
++ isDefault: Whether should use default import for decorator, default is `false`

@@ -1,8 +1,16 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 const prompts = require('prompts');
 const glob = require('glob');
 const Runner = require('jscodeshift/src/Runner');
+const argv = require('yargs')
+  .option('folder', {
+    alias: 'f',
+    default: './src'
+  })
+  .boolean('all')
+  .argv;
 
 const folder = path.resolve(__filename, '..', 'transforms');
 const files = fs.readdirSync(folder)
@@ -48,7 +56,7 @@ function getConfigs(filename) {
 
 function execute(filename) {
   return getConfigs(filename).then((configs) => {
-    const files = glob.sync(path.resolve(__filename, '../src/*'));
+    const files = glob.sync(path.resolve(process.cwd(), argv.folder, './*'));
     Runner.run(
       filename,
       files,
@@ -61,7 +69,12 @@ function execute(filename) {
   });
 }
 
-if (choices.length === 1) {
+if (argv.all) {
+  choices.forEach((choice) => {
+    const transformer = choice.value;
+    execute(transformer);
+  });
+} else if (choices.length === 1) {
   const transformer = choices[0].value;
   console.warn('[NOTICE]: Only one transformer detected, use directly. Transformer: ', transformer);
   console.log(transformer);

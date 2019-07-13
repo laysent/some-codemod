@@ -1,7 +1,7 @@
 {
   "name": "some-codemod",
   "bin": {
-    "refactor": "./bin"
+    "refactor": "./bin.js"
   },
   "version": "0.1.0",
   "main": "index.js",
@@ -13,7 +13,8 @@
   "dependencies": {
     "glob": "^7.1.4",
     "jscodeshift": "^0.6.4",
-    "prompts": "^2.1.0"
+    "prompts": "^2.1.0",
+    "yargs": "^13.2.4"
   },
   "devDependencies": {
     "@types/jscodeshift": "^0.6.0",

@@ -16,6 +16,21 @@ const choices = files.map(file => ({
 function getConfigs(filename) {
   const { configs } = require(filename);
   const configNames = Object.keys(configs);
+  const configPath = path.resolve(process.cwd(), '.refactorrc');
+  if (fs.existsSync(configPath)) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(configPath, 'utf8', (error, content) => {
+        if (error) return reject(error);
+        try {
+          const json = JSON.parse(content);
+          const { name } = path.parse(filename);
+          return resolve(Object.assign({}, configs, json[name]));
+        } catch (e) {
+          return reject(e);
+        }
+      });
+    });
+  }
   return new Promise((resolve) => {
     if (configNames.length === 0) return resolve({});
     prompts(configNames.map(name => ({
@@ -27,7 +42,7 @@ function getConfigs(filename) {
         if (value === '' || value === undefined) return `${name} is required!`;
         return true;
       },
-    })));
+    }))).then(resolve);
   });
 }
 

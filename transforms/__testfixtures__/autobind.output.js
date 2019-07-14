@@ -1,6 +1,7 @@
 import React from 'react';
 import { debounce } from 'some-decorators';
 import { observable } from 'mobx-react';
+import sthElse from 'core-decorators';
 
 import { autobind } from "core-decorators";
 

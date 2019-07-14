@@ -79,3 +79,32 @@ Possible configs for this codemod are:
 + decoratorName: Name of decorator, default is `autobind`
 + decoratorPath: Path of decorator library, default is `core-decorators`
 + isDefault: Whether should use default import for decorator, default is `false`
+
+Known Issue:
+
++ When transforming class function property with type definition, it's type definition will be lost. Example
+
+```typescript
+class Component extends React.Component {
+  SomeItem: React.FunctionComponent<{}> = (props) => <div {...props} />;
+  render() {
+    return null;
+  }
+}
+```
+
+If transformed, will result in:
+
+```typescript
+@autobind
+class Component extends React.Component {
+  SomeItem(props) {
+    return <div {...props} />;
+  }
+  render() {
+    return null;
+  }
+}
+```
+
+To keep the type definition, this scenario will be ignored and not transformed.

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { debounce } from 'some-decorators';
 import { observable } from 'mobx-react';
 
@@ -15,4 +15,15 @@ class A extends React.Component {
   }
 }
 
-export default A;
+@debounce(100)
+@observable
+class B extends React.Component {
+  SomeItem: FunctionComponent<{ id: number }> = (props) => (<div id={props.id} />);
+  state: string | null = null;
+  timer: number | undefined;
+  render() {
+    return null;
+  }
+}
+
+export { A, B };

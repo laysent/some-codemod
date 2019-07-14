@@ -24,9 +24,14 @@ class Transformer extends BaseTransformer {
     const members = node.body.body;
     return members.some((member) => {
       if (member.type !== 'ClassProperty') return false;
-      const { value } = member;
+      const { value, typeAnnotation } = member;
       if (!value) return false;
-      return value.type === 'ArrowFunctionExpression';
+      const isArrowFunctionExpression = value.type === 'ArrowFunctionExpression';
+      if (isArrowFunctionExpression && typeAnnotation) {
+        this.report('unable to transform TypeScript arrow function with type annotation.');
+        return false;
+      }
+      return isArrowFunctionExpression;
     });
   }
   hasNoAutobindAsDecorator(nodePath) {

@@ -3,8 +3,17 @@
   "bin": {
     "refactor": "./bin.js"
   },
-  "version": "0.1.0",
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laysent/some-codemod.git"
+  },
+  "keywords": [
+    "codemod"
+  ],
+  "bugs": {
+    "url": "https://github.com/laysent/some-codemod/issues"
+  },
+  "version": "0.1.1",
   "author": "LaySent <laysent@gmail.com>",
   "license": "MIT",
   "scripts": {

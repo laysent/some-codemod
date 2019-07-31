@@ -4,6 +4,7 @@ const { defineTest } = require('jscodeshift/dist/testUtils');
   'autobind',
   'autobind-ts',
   'autobind-no-match',
+  'autobind-directly-return',
   'autobind-already-imported',
 ].forEach((testCase) => {
   defineTest(__dirname, 'autobind', null, testCase);

@@ -73,6 +73,22 @@ class Transformer extends BaseTransformer {
     );
     this.insertBeforeRelativeImport(statement);
   }
+  mapDirectReturnArrowFunction(arrowFunction) {
+    const returnValue = arrowFunction.body;
+    const returnStatement = this.j.returnStatement(returnValue);
+    const blockStatement = this.j.blockStatement([returnStatement]);
+    const ret = this.j.functionExpression(
+      arrowFunction.id,
+      arrowFunction.params,
+      blockStatement
+    );
+    ret.returnType = arrowFunction.returnType;
+    return ret;
+  }
+  mapArrowFunction(arrowFunction) {
+    arrowFunction.type = 'FunctionExpression';
+    return arrowFunction;
+  }
   transformClass(classNodePath) {
     const node = classNodePath.value;
     if (!node.decorators) node.decorators = [];
@@ -83,8 +99,12 @@ class Transformer extends BaseTransformer {
       if (property.type !== 'ClassProperty') return;
       if (!property.value) return;
       if (property.value.type !== 'ArrowFunctionExpression') return;
+      if (property.value.body.type === 'BlockStatement') {
+        property.value = this.mapArrowFunction(property.value);
+      } else {
+        property.value = this.mapDirectReturnArrowFunction(property.value);
+      }
       property.type = 'ClassMethod';
-      property.value.type = 'FunctionExpression';
     });
     return classNodePath;
   }

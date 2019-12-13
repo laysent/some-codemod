@@ -149,8 +149,9 @@ If decorator is on class, all methods inside will be switched to arrow function:
 
 ```javascript
 import { autobind } from 'core-decorators';
+
+@autobind
 class Component extends React.Component {
-  @autobind
   onClick() { }
   render() {
     return null;

@@ -18,6 +18,13 @@ refactor
 
 Above example shows global installation. In production, it's recommended to use local installation instead. In this way, it's recommended to use npm-scripts to run `refactor`, as it will help find the correct location of command line tool.
 
+Several CLI flag you can use:
+
++ `--folder` / `-f`: folder of source code where transform should be applied, default value is `./src`;
++ `--transforms` / `-t`: transforms to use, use comma to separate; if no transform is provided, CLI will ask to choose manually. Example: `-t iconfont,no-autobind`;
++ `--yes` / `-y`: use default config directly; if this flag is not provided, CLI will tries to find `.refactorrc` file locally for configured config; if still not found, CLI will ask to confirm config manually;
++ `--all`: apply all transforms in once
+
 ## Built-in Codemods
 
 ### iconfont

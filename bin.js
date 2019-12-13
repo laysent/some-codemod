@@ -9,6 +9,14 @@ const argv = require('yargs')
     alias: 'f',
     default: './src'
   })
+  .option('transforms', {
+    alias: 't',
+    default: '',
+  })
+  .option('yes', {
+    alias: 'y',
+    default: true
+  })
   .boolean('all')
   .argv;
 
@@ -38,6 +46,9 @@ function getConfigs(filename) {
         }
       });
     });
+  }
+  if (argv.yes) {
+    return Promise.resolve(configs);
   }
   return new Promise((resolve) => {
     if (configNames.length === 0) return resolve({});
@@ -71,6 +82,13 @@ function execute(filename) {
 
 if (argv.all) {
   choices.forEach((choice) => {
+    const transformer = choice.value;
+    execute(transformer);
+  });
+} else if (argv.transforms) {
+  const allTransforms = argv.transforms.split(',');
+  const used = choices.filter(ch => allTransforms.some(t => ch.title === t));
+  used.forEach((choice) => {
     const transformer = choice.value;
     execute(transformer);
   });

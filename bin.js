@@ -15,7 +15,8 @@ const argv = require('yargs')
   })
   .option('yes', {
     alias: 'y',
-    default: true
+    type: 'boolean',
+    default: false
   })
   .option('verbose', {
     alias: 'v',

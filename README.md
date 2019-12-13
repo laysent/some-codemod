@@ -23,7 +23,8 @@ Several CLI flag you can use:
 + `--folder` / `-f`: folder of source code where transform should be applied, default value is `./src`;
 + `--transforms` / `-t`: transforms to use, use comma to separate; if no transform is provided, CLI will ask to choose manually. Example: `-t iconfont,no-autobind`;
 + `--yes` / `-y`: use default config directly; if this flag is not provided, CLI will tries to find `.refactorrc` file locally for configured config; if still not found, CLI will ask to confirm config manually;
-+ `--all`: apply all transforms in once
++ `--all`: apply all transforms in once;
++ `--verbose` / `-v`: same as jscodeshift verbose flag, show more information about the transform process, possible values are `0`, `1` and `2`, default value is `0`.
 
 ## Built-in Codemods
 

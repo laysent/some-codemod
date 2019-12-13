@@ -17,6 +17,10 @@ const argv = require('yargs')
     alias: 'y',
     default: true
   })
+  .option('verbose', {
+    alias: 'v',
+    default: 0,
+  })
   .boolean('all')
   .argv;
 
@@ -74,6 +78,7 @@ function execute(filename) {
       {
         extensions: 'js,jsx,ts,tsx',
         parser: 'tsx',
+        verbose: argv.verbose,
         ...configs
       }
     );

@@ -108,3 +108,63 @@ class Component extends React.Component {
 ```
 
 To keep the type definition, this scenario will be ignored and not transformed.
+
+### no-autobind
+
+Reverse version of `autobind` codemod. This codemod will transform class definition to remove usage of `autobind` decorator. Instead, it will change class method to arrow function for automatic this bind. Example:
+
+Input the following class definition (with decorator on class method):
+
+```javascript
+import { autobind } from 'core-decorators';
+class Component extends React.Component {
+  @autobind
+  onClick() { }
+  render() {
+    return null;
+  }
+}
+```
+
+Transform result will be:
+
+```javascript
+class Component extends React.Component {
+  onClick = () => { };
+  render() {
+    return null;
+  }
+}
+```
+
+If decorator is on class, all methods inside will be switched to arrow function:
+
+```javascript
+import { autobind } from 'core-decorators';
+class Component extends React.Component {
+  @autobind
+  onClick() { }
+  render() {
+    return null;
+  }
+}
+```
+
+Transform result will be:
+
+```javascript
+class Component extends React.Component {
+  onClick = () => { };
+  render = () => {
+    return null;
+  }
+}
+```
+
+Notice that `render` function is also transformed, though it might not be necessary for React Component.
+
+Possible configs for this codemod are:
+
++ decoratorName: Name of decorator, default is `autobind`
++ decoratorPath: Path of decorator library, default is `core-decorators`
++ isDefault: Whether should use default import for decorator, default is `false`

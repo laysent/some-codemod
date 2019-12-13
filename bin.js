@@ -72,17 +72,38 @@ function getConfigs(filename) {
 
 function execute(filename) {
   return getConfigs(filename).then((configs) => {
-    const files = glob.sync(path.resolve(process.cwd(), argv.folder, './*'));
+    const ts = glob.sync(path.resolve(process.cwd(), argv.folder, './**/*.{ts,js}'));
+    const tsx = glob.sync(path.resolve(process.cwd(), argv.folder, './**/*.{tsx,jsx}'));
+    console.log('------ use ts parser to transform -----');
     Runner.run(
       filename,
-      files,
+      ts,
       {
-        extensions: 'js,jsx,ts,tsx',
-        parser: 'tsx',
+        // `extensions` works only when folder is listed in `paths` (second parameter)
+        // since `ts` array is a list of files (get via glob)
+        // `extensions` itself is actually not used
+        // keep it here in case later use case requires it
+        extensions: 'ts,js',
+        // ts and tsx parsers might treat source code differently:
+        // when using ts parser, `const value = <string>(obj[key]);` is valid,
+        // while using tsx parser, above code might be treated as react component.
+        parser: 'ts',
         verbose: argv.verbose,
         ...configs
       }
-    );
+    ).then(() => {
+      console.log('------ use tsx parser to transform -----');
+      Runner.run(
+        filename,
+        tsx,
+        {
+          extensions: 'jsx,tsx',
+          parser: 'tsx',
+          verbose: argv.verbose,
+          ...configs
+        }
+      );
+    });
   });
 }
 

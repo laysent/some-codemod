@@ -12,7 +12,8 @@ interface Props {
 class ClassDecorated extends React.Component<Props> {
   private count: number;
   constructor() {
-    count = 0;
+    super();
+    this.count = 0;
   }
   reference = {
     onClick: this.onClick,
@@ -25,10 +26,12 @@ class ClassDecorated extends React.Component<Props> {
   @observable
   onClick(params: number, ...rest: string[]): boolean {
     this.asyncFunc();
+    return false;
   }
   @observable
   async asyncFunc(param: number = 1): Promise<null[]> {
     console.log('async func');
+    return [null];
   }
   onDblClick(): void {
     // do nothing
@@ -43,7 +46,8 @@ class ClassDecorated extends React.Component<Props> {
 class MethodDecorated extends React.Component<Props> {
   private count: number;
   constructor() {
-    count = 0;
+    super();
+    this.count = 0;
   }
   reference = {
     onClick: this.onClick,
@@ -57,11 +61,13 @@ class MethodDecorated extends React.Component<Props> {
   @autobind
   onClick(params: number, ...rest: string[]): boolean {
     this.asyncFunc();
+    return false;
   }
   @observable
   @autobind
   async asyncFunc(param: number = 1): Promise<null[]> {
     console.log('async func');
+    return [null];
   }
   @autobind
   onDblClick(): void {

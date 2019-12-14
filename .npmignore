@@ -1,5 +1,5 @@
 __testfixtures__
-__tests__
+tests
 coverage
 node_modules
 .gitignore

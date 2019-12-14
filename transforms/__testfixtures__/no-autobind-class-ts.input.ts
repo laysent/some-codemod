@@ -6,16 +6,16 @@ interface Props {
   value: string;
 }
 
+@observable
+@autobind
 class A extends React.Component<Props> {
-  @observable
-  @autobind
   onClick(params: number, ...rest: string[]): boolean {
     console.log('clicked!');
+    return false;
   }
-  @observable
-  @autobind
   async asyncFunc(param: number = 1): Promise<null[]> {
     console.log('async func');
+    return [null];
   }
   render() {
     return null;

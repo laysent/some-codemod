@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "glob": "^7.1.4",
-    "jscodeshift": "^0.6.4",
+    "jscodeshift": "^0.7.0",
     "prompts": "^2.1.0",
     "yargs": "^13.2.4"
   },

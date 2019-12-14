@@ -1,4 +1,4 @@
-const { defineTest } = require('jscodeshift/dist/testUtils');
+const { defineTest } = require('./utils');
 
 [
   'no-autobind',

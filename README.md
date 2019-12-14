@@ -88,7 +88,7 @@ Possible configs for this codemod are:
 + decoratorPath: Path of decorator library, default is `core-decorators`
 + isDefault: Whether should use default import for decorator, default is `false`
 
-Known Issue:
+#### Known Issue:
 
 + When transforming class function property with type definition, it's type definition will be lost. Example
 
@@ -177,3 +177,34 @@ Possible configs for this codemod are:
 + decoratorName: Name of decorator, default is `autobind`
 + decoratorPath: Path of decorator library, default is `core-decorators`
 + isDefault: Whether should use default import for decorator, default is `false`
+
+#### Notice
+
+autobind and arrow function are not by definition 100% equal. There are tiny difference. Following is an example:
+
+```javascript
+class A {
+  ref = {
+    onClick: this.onClick,
+  };
+  @autobind
+  onClick() {
+    console.log('clicked');
+  }
+}
+```
+
+Above code is correct, but changing autobind directly to arrow function will cause error, as `this.onClick` is actually used before `onClick = () => { }` is defined.
+
+To make things work, transform will be made with order modification as well:
+
+```javascript
+class A {
+  onClick = () => {
+    console.log('clicked');
+  };
+  ref = {
+    onClick: this.onClick,
+  };
+}
+```

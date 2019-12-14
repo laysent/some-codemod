@@ -77,8 +77,7 @@ class Transformer extends BaseTransformer {
         if (node.specifiers.length === 0) this.j(nodePath).remove();
       });
   }
-  changeClassMethodToArrowFunction(nodePath) {
-    const node = nodePath.value;
+  changeClassMethodToArrowFunction(node) {
     if (node.decorators) {
       node.decorators = node.decorators.filter(decorator => !this.isDecorator(decorator));
     }
@@ -91,15 +90,69 @@ class Transformer extends BaseTransformer {
     node.value.async = async;
     node.value.returnType = returnType;
   }
+  transform(classNodePath, shouldTransform) {
+    const { body: classBody } = classNodePath.value;
+    for (let i = 0; i < classBody.body.length; i += 1) {
+      const node = classBody.body[i];
+      if (!shouldTransform(node)) continue;
+      
+      this.changeClassMethodToArrowFunction(node);
+
+      /**
+       * How to switch definition order after transformation:
+       * 1. find property and getter definition in class
+       * 2. if `this.xxx` is used in property or getter function,
+       *    this method after transformation should be placed above,
+       *    otherwise property / getter cannot use it before definition;
+       * 3. find the first usage of property or getter (`firstUsagePath`)
+       * 4. move method definition at that position (`methodPosition`),
+       *    and move property / getter definition after it
+       */
+      const firstUsagePath = classNodePath.get('body').get('body')
+        .filter(nodePath => {
+          const node = nodePath.value
+          if (node.type === 'ClassProperty') {
+            if (!node.value) return false;
+            return node.value.type !== 'ArrowFunctionExpression';
+          }
+          return node.type === 'ClassMethod' && node.kind === 'get';
+        })
+        .filter(nodePath => {
+          const collection = this.j(nodePath)
+            .find(this.j.MemberExpression, {
+              object: { type: 'ThisExpression' },
+              property: { type: 'Identifier', name: node.key.name },
+            });
+          return collection.size() > 0;
+        })[0];
+
+      let methodPosition;
+      if (firstUsagePath) {
+        methodPosition = Math.min(
+          classBody.body.findIndex(node => node === firstUsagePath.value),
+          i,
+        );
+      } else {
+        methodPosition = i;
+      }
+
+      // move method to `methodPosition`, property / getter should be placed after it
+      if (methodPosition !== i) {
+        let tmp = node;
+        for (let j = i; j > methodPosition; j -= 1) {
+          classBody.body[j] = classBody.body[j - 1];
+        }
+        classBody.body[methodPosition] = tmp;
+        i -= 1;
+      }
+    }
+    return;
+  }
   transformClassMethod(classNodePath) {
-    const methods = this.j(classNodePath).find(this.j.ClassMethod)
-      .filter((nodePath) => {
-        const node = nodePath.value;
-        const { decorators } = node;
-        return this.hasAutobindDecorator(decorators);
-      });
-    methods.forEach((method) => {
-      this.changeClassMethodToArrowFunction(method);
+    this.transform(classNodePath, (node) => {
+      if (node.type !== 'ClassMethod') return false;
+      const { decorators } = node;
+      return this.hasAutobindDecorator(decorators);
     });
   }
   transformClass(classNodePath) {
@@ -107,11 +160,15 @@ class Transformer extends BaseTransformer {
     if (!hasDecorator) return;
     const node = classNodePath.value;
     node.decorators = node.decorators.filter(decorator => !this.isDecorator(decorator));
-    this.j(classNodePath)
-      .find(this.j.ClassMethod)
-      .forEach((nodePath) => {
-        this.changeClassMethodToArrowFunction(nodePath);
-      });
+    this.transform(
+      classNodePath,
+      (node) => {
+        if (node.type !== 'ClassMethod') return false;
+        if (node.key.name === 'constructor') return false;
+        if (node.kind === 'get' || node.kind === 'set') return false;
+        return true;
+      }
+    );
   }
   run() {
     this.removeAutobindImported();

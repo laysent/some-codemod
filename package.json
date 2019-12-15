@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/laysent/some-codemod/issues"
   },
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "LaySent <laysent@gmail.com>",
   "license": "MIT",
   "scripts": {
